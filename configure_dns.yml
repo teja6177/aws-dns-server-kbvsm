@@ -1,35 +1,10 @@
 ---
-- name: Launch AWS EC2 instance
-  hosts: localhost
-  connection: local
-  gather_facts: false
-
-  vars_files:
-    - vault/secrets.yml
-
-  tasks:
-    - name: Launch EC2 instance
-      ec2:
-        key_name: "{{ aws_key_name }}"
-        instance_type: t2.micro
-        image: ami-0abcdef1234567890   # Replace with Amazon Linux 2 AMI
-        wait: yes
-        group: sg-0123456789abcdef0    # Replace with your security group
-        region: "{{ aws_region }}"
-        count: 1
-      register: ec2
-
-    - name: Add new instance to inventory
-      add_host:
-        hostname: "{{ item.public_ip }}"
-        ansible_user: ec2-user
-        ansible_ssh_private_key_file: "~/.ssh/{{ aws_key_name }}.pem"
-        groups: dns
-      loop: "{{ ec2.instances }}"
-
 - name: Configure BIND DNS on EC2
   hosts: dns
   become: yes
+
+  vars_files:
+    - vault/secrets.yml
 
   vars:
     dns_dir: /var/named

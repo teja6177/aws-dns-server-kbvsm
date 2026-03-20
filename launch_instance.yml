@@ -1,0 +1,33 @@
+---
+- name: Launch AWS EC2 instance (interactive SG)
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars_files:
+    - vault/secrets.yml
+
+  vars_prompt:
+    - name: "sg_name"
+      prompt: "Enter the Security Group ID or name for your EC2 instance"
+      private: no
+
+  tasks:
+    - name: Launch EC2 instance if not exists
+      ec2:
+        key_name: "{{ aws_key_name }}"
+        instance_type: t2.micro
+        image: ami-0abcdef1234567890   # Amazon Linux 2 AMI
+        wait: yes
+        group: "{{ sg_name }}"          # Uses user input
+        region: "{{ aws_region }}"
+        count_tag:
+          Name: kbvsm-dns
+        exact_count: 1
+        instance_tags:
+          Name: kbvsm-dns
+      register: ec2
+
+    - name: Output instance info
+      debug:
+        var: ec2

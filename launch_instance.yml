@@ -14,7 +14,7 @@
 
   tasks:
     - name: Launch EC2 instance if not exists
-      ec2:
+      amazon.aws.ec2:
         key_name: "{{ aws_key_name }}"
         instance_type: t2.micro
         image: ami-0abcdef1234567890   # Amazon Linux 2 AMI

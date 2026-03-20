@@ -1,0 +1,45 @@
+i- name: Launch AWS EC2 and configure DNS
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    key_name: MyKeyPair             # Replace with your AWS key pair
+    instance_type: t2.micro
+    image: ami-0abcdef1234567890    # Replace with Amazon Linux 2 AMI ID
+    security_group: sg-0123456789abcdef0  # Replace with your SG
+    region: us-east-1
+
+  tasks:
+
+    - name: Launch EC2 instance
+      ec2:
+        key_name: "{{ key_name }}"
+        instance_type: "{{ instance_type }}"
+        image: "{{ image }}"
+        wait: yes
+        group_id: "{{ security_group }}"
+        region: "{{ region }}"
+        count: 1
+      register: ec2
+
+    - name: Add new instance to inventory
+      add_host:
+        hostname: "{{ item.public_ip }}"
+        ansible_user: ec2-user
+        ansible_ssh_private_key_file: "~/.ssh/{{ key_name }}.pem"
+        groups: dns
+      loop: "{{ ec2.instances }}"
+
+- name: Configure DNS server for kbvsm.com
+  hosts: dns
+  become: yes
+
+  tasks:
+    - name: Pull setup script from GitHub
+      git:
+        repo: 'https://github.com/your-username/aws-dns-kbvsm.git'
+        dest: /home/ec2-user/aws-dns-kbvsm
+
+    - name: Run setup_named.sh
+      command: bash /home/ec2-user/aws-dns-kbvsm/setup_named.sh

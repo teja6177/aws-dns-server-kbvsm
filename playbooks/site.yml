@@ -1,0 +1,4 @@
+---
+- import_playbook: launch_dns.yml
+- import_playbook: setup_dns.yml
+- import_playbook: add_record.yml

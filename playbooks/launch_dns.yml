@@ -52,6 +52,10 @@
         wait: yes
       register: ec2_output
 
+    - name: Debug EC2 output
+      debug:
+        var: ec2_output  
+
     - name: Add EC2 instance to dynamic inventory
       add_host:
         name: >-

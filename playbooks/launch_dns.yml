@@ -6,7 +6,7 @@
   vars:
     domain_name: kbvsm.com
     region: ap-south-1
-    key_name: YOUR_KEY_NAME           # Replace with your AWS key
+    key_name: honorlaptop           # Replace with your AWS key
     vpc_id: vpc-0db825702939b11a0              # Replace with your VPC ID
     subnet_id: subnet-06dba24b763624c5e        # Replace with a subnet in that VPC
     sg_name: dns-sg

@@ -6,10 +6,11 @@
   vars:
     domain_name: kbvsm.com
     region: ap-south-1
-    key_name: YOUR_KEY_NAME       # Replace with your existing EC2 key
-    vpc_id: ""                    # optional, default VPC if empty
+    key_name: YOUR_KEY_NAME           # Replace with your AWS key
+    vpc_id: vpc-0db825702939b11a0              # Replace with your VPC ID
+    subnet_id: subnet-06dba24b763624c5e        # Replace with a subnet in that VPC
     sg_name: dns-sg
-    ami_id: ami-0f58b397bc5c1f2e8  # Replace with your desired CentOS AMI
+    ami_id: ami-0f58b397bc5c1f2e8    # Replace with your CentOS AMI
     instance_type: t2.micro
 
   tasks:
@@ -18,13 +19,13 @@
       amazon.aws.ec2_group:
         name: "{{ sg_name }}"
         description: Security group for DNS server
-        vpc_id: "{{ vpc_id if vpc_id != '' else omit }}"
+        vpc_id: "{{ vpc_id }}"
         region: "{{ region }}"
         rules:
           - proto: tcp
             from_port: 22
             to_port: 22
-            cidr_ip: 0.0.0.0/0      # SSH from anywhere
+            cidr_ip: 0.0.0.0/0      # SSH
           - proto: tcp
             from_port: 53
             to_port: 53
@@ -47,6 +48,7 @@
         key_name: "{{ key_name }}"
         region: "{{ region }}"
         security_group: "{{ sg_name }}"
+        subnet_id: subnet-06dba24b763624c5e     # Must provide a valid subnet
         wait: yes
       register: ec2_output
 

@@ -6,8 +6,8 @@
   vars:
     domain_name: kbvsm.com
     region: ap-south-1
-    key_name: YOUR_KEY_NAME      # Replace with your existing EC2 key
-    vpc_id: ""                   # Optional: specify VPC ID, leave empty for default
+    key_name: YOUR_KEY_NAME       # Replace with your existing EC2 key
+    vpc_id: ""                    # optional, default VPC if empty
     sg_name: dns-sg
     ami_id: ami-0f58b397bc5c1f2e8  # Replace with your desired CentOS AMI
     instance_type: t2.micro
@@ -22,12 +22,17 @@
         region: "{{ region }}"
         rules:
           - proto: tcp
-            ports:
-              - 22    # SSH
-              - 53    # DNS TCP
+            from_port: 22
+            to_port: 22
+            cidr_ip: 0.0.0.0/0      # SSH from anywhere
+          - proto: tcp
+            from_port: 53
+            to_port: 53
+            cidr_ip: 0.0.0.0/0      # DNS TCP
           - proto: udp
-            ports:
-              - 53    # DNS UDP
+            from_port: 53
+            to_port: 53
+            cidr_ip: 0.0.0.0/0      # DNS UDP
         rules_egress:
           - proto: -1
             cidr_ip: 0.0.0.0/0
@@ -55,7 +60,7 @@
     - name: Show instance info
       debug:
         msg: |
-          EC2 instance launched:
+          EC2 instance launched successfully!
           Public IP: {{ ec2_output.instances[0].public_ip_address }}
           Private IP: {{ ec2_output.instances[0].private_ip_address }}
           Instance ID: {{ ec2_output.instances[0].id }}

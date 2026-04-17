@@ -11,7 +11,7 @@
     vpc_id: vpc-0db825702939b11a0
     subnet_id: subnet-06dba24b763624c5e
     sg_name: dns-sg
-    ami_id: ami-0f58b397bc5c1f2e8
+    ami_id: ami-08e7318c2e031024c
     instance_type: t2.micro
     private_key_path: /root/honorlaptop.pem
 

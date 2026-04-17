@@ -70,4 +70,4 @@
           EC2 instance launched successfully!
           Public IP: {{ ec2_output.instances[0].public_ip_address }}
           Private IP: {{ ec2_output.instances[0].private_ip_address }}
-          Instance ID: {{ ec2_output.instances[0].id }}
+          Instance ID: {{ ec2_output.instances[0].instance_id }}
